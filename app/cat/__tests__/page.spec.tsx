@@ -4,17 +4,20 @@ import { createWrapper, renderWithClient } from "@/tests/utils";
 import { rest } from "msw";
 import { server } from "@/tests/server";
 
-// TODO: Test the loading state
-
 describe("Cat Page", () => {
-    it("successful query component", async () => {
+    it("renders as expected on success", async () => {
         await waitFor(async () => {
             const result = renderWithClient(<Cat />);
             expect(result.findByAltText(/fold/i)).toBeTruthy();
         });
     });
 
-    it("failure query component", async () => {
+    it("renders as expected on loading", async () => {
+        const result = renderWithClient(<Cat />);
+        expect(result.findByAltText(/coming/i)).toBeTruthy();
+    });
+
+    it("renders as expected on error", async () => {
         server.use(
             rest.get("*", (req, res, ctx) => {
                 return res(ctx.status(403));

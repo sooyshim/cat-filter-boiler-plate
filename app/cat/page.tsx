@@ -14,11 +14,10 @@ const queryClient = new QueryClient();
 
 const getCat = (breedId: string) =>
     fetch(
-        `https://api.thecatapi.com/v1/images/search?limit=12&breed_ids=${breedId}`,
+        `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedId}`,
         {
             headers: {
-                "x-api-key":
-                    "live_ITNuURfpJmiFUPhgy036hpCs1MFuiCyZOSAwQneYRel289ryDMvEAOfJ5e4fShLw",
+                "x-api-key": process.env.NEXT_PUBLIC_CAT_API_KEY!,
             },
         }
     ).then((res) => {
@@ -44,11 +43,13 @@ const CatInner: FC = () => {
     };
 
     if (isLoading) {
-        return <div>Cats are coming!</div>;
+        return <div className="mt-10 m-auto text-center">Cats are coming!</div>;
     }
 
     if (data.error) {
-        return <div>Cats could not come!</div>;
+        return (
+            <div className="mt-10 m-auto text-center">Cats could not come!</div>
+        );
     }
 
     return (
@@ -60,7 +61,7 @@ const CatInner: FC = () => {
             <hr className="mt-10 mb-10" />
 
             <div className="flex">
-                <nav className="ml-10 border">
+                <nav className="ml-10">
                     <ul>
                         <li className="mb-1">
                             <button
@@ -87,6 +88,9 @@ const CatInner: FC = () => {
                 </nav>
                 <div className="border ml-10">
                     {data?.map((cat: any) => {
+                        if (!cat.breeds) {
+                            return <div key={cat.id}>Randome Cats Came!</div>;
+                        }
                         return (
                             <div key={cat.id}>
                                 <Image
